@@ -2,13 +2,14 @@ import React from "react";
 import TodoItem from "./TodoItem";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../TodoApp";
 
 const TodoList = ({ todos, getTodo }) => {
   const deleteTodo = async (id) => {
     try {
       if (confirm(`Are you sure you want to delete ${id} ?`)) {
         const { data } = await axios.delete(
-          `http://localhost:5555/api/todo/${id}`
+          BASE_URL + `/todo/${id}`
         );
         console.log("Result of deleting todo ", data);
         toast.success(data.msg);
@@ -23,7 +24,7 @@ const TodoList = ({ todos, getTodo }) => {
     try {
       if (confirm(`Are you sure you want to update ${id} ?`)) {
         const { data } = await axios.patch(
-          `http://localhost:5555/api/todo/${id}`,{completed:true},
+          BASE_URL + `/todo/${id}`,{completed:true},
         );
         console.log("Result of updating todo ", data);
         toast.success(data.msg);

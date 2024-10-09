@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import TodoForm from "./components/TodoForm";
 import TodoList from "./components/TodoList";
 import axios from "axios";
+export const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5555/api" : "/api"
 const TodoApp = () => {
   const [todos, setTodos] = useState([]);
   const getTodo = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5555/api/todos");
+      const { data } = await axios.get(BASE_URL + "/todos");
       setTodos(data);
       console.log("Get all Todos: ", data);
     } catch (error) {

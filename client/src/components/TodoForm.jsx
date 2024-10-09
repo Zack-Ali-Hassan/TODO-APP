@@ -1,13 +1,14 @@
 import axios from "axios";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../TodoApp";
 
 const TodoForm = ({getTodo}) => {
   const [body, setBody] = useState("");
 
   const createTodo = async () => {
     try {
-      const result = await axios.post("http://localhost:5555/api/todo", {body:body});
+      const result = await axios.post(BASE_URL + "/todo", {body:body});
       console.log("the result is: ", result);
       toast.success("Todo created successfully")
        setBody(''); // Clear input field

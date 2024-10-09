@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -26,9 +25,12 @@ var collection *mongo.Collection
 func main() {
 	fmt.Println("Server started....")
 	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading environment: ", err)
+	if os.Getenv("ENV") != "production" {
+		if err != nil {
+			log.Fatal("Error loading environment: ", err)
+		}
 	}
+
 	MONGODB_URI := os.Getenv("MONGODB_URI")
 	clientOption := options.Client().ApplyURI(MONGODB_URI)
 	client, err := mongo.Connect(context.Background(), clientOption)
@@ -45,10 +47,11 @@ func main() {
 	collection = client.Database("golang_db").Collection("todos")
 
 	app := fiber.New()
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5173/",
-		AllowHeaders: "Origin, Content-Type, Accept",
-	}))
+	// app.Use(cors.New(cors.Config{
+	// 	AllowOrigins: "http://localhost:5173/",
+	// 	AllowHeaders: "Origin, Content-Type, Accept",
+	// }))
+
 	app.Get("/api/todos", getTodos)
 	app.Get("/api/todo/:id", getTodo)
 	app.Post("/api/todo", createTodo)
@@ -59,7 +62,9 @@ func main() {
 	if port == "" {
 		port = "5555"
 	}
-
+	if os.Getenv("ENV") == "production" {
+		app.Static("/", "./client/dist")
+	}
 	log.Fatal(app.Listen(":" + port))
 
 }
